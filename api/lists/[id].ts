@@ -10,7 +10,6 @@ export default async (request: VercelRequest, response: VercelResponse) => {
     
     if (request.method === 'DELETE') {
         const listId = Number(request.query.id)
-        const { uid }: { uid: string } = request.body
-        response.status(200).json(await deleteList(uid, listId))
+        response.status(200).json(await deleteList(listId))
     }
 }

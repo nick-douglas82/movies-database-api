@@ -72,7 +72,7 @@ export const updateListTitle = async (uid: string, listId: number, title: string
     return result;
 }
 
-export const deleteList = async (uid: string, listId: number) => {
+export const deleteList = async (listId: number) => {
     const deleteMedia = prisma.media.deleteMany({
         where: {
           listId: Number(listId),
