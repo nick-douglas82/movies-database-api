@@ -10,24 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model List {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   title     String   @db.VarChar(255)
-//   authorId  String
-//   media     Media[]
-// }
-
-// model Media {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   mediaId   String   @db.VarChar(255)
-//   list      List    @relation(fields: [listId], references: [id])
-//   listId    Int
-// }
-
 model Lists {
   id        Int      @id @default(autoincrement())
   title     String   @db.VarChar(255)
@@ -43,6 +25,6 @@ model Media {
   title     String
   type      String
   imageUrl  String
-  list      Lists     @relation(fields: [listId], references: [id])
+  list      Lists     @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId    Int
 }

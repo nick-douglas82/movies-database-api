@@ -1,6 +1,5 @@
-import { Prisma, PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 import express from 'express'
-import { type } from 'os';
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
@@ -29,52 +28,86 @@ type Media = {
     title: string
   }
 
-  app.get('/api/lists', async (req, res) => {
-    const userId = <string>req.query.userId
+//   app.get('/api/lists', async (req, res) => {
+//     const userId = <string>req.query.userId
 
-    const lists = await prisma.lists.findMany({
-        where: {
-            userId: userId
-        },
-        include: { media: true }
-    })
-    res.json(lists)
-  })
+//     const lists = await prisma.lists.findMany({
+//         orderBy: {
+//             id: 'asc'
+//         },
+//         where: {
+//             userId: userId
+//         },
+//         include: { media: true }
+//     })
+//     res.json(lists)
+//   })
 
   // Create a new list
-  app.post('/api/list/new', async (req, res) => {
-    const { title, userId }: List = req.body
-    const result = await prisma.lists.create({
-        data: {
-            title: title,
-            userId: userId,
-            media: {
-                create: []
-            }
-        },
-        include: { media: true }
-    })
+//   app.post('/api/list/new', async (req, res) => {
+//     const { title, userId }: List = req.body
+//     const result = await prisma.lists.create({
+//         data: {
+//             title: title,
+//             userId: userId,
+//             media: {
+//                 create: []
+//             }
+//         },
+//         include: { media: true }
+//     })
 
-    res.json(result)
-  })
+//     res.json(result)
+//   })
 
   // Create list and add the current media item
-  app.post(`/api/list`, async (req, res) => {
-    const { title, userId }: List = req.body
-    const { id, poster_path, title: mediaTitle, media_type }: Media = req.body.mediaItem
+//   app.post(`/api/list`, async (req, res) => {
+//     const { title, userId }: List = req.body
+//     const { id, poster_path, title: mediaTitle, media_type }: Media = req.body.mediaItem
 
-    const result = await prisma.lists.create({
+//     const result = await prisma.lists.create({
+//         data: {
+//             title: title,
+//             userId: userId,
+//             media: {
+//                 create: {
+//                     title: mediaTitle,
+//                     mediaId: id,
+//                     type: media_type,
+//                     imageUrl: poster_path
+//                 }
+//             }
+//         },
+//         include: { media: true }
+//     })
+
+//     res.json(result)
+//   })
+
+  // Add media to list id
+//   app.post(`/api/list/:id`, async (req, res) => {
+//     const { listId }: { listId: number } = req.body
+//     const { id, poster_path, title: mediaTitle, media_type }: Media = req.body.mediaItem
+//     const result = await prisma.media.create({
+//         data: {
+//             mediaId: id,
+//             listId: listId,
+//             imageUrl: poster_path,
+//             type: media_type,
+//             title: mediaTitle
+//         },
+//     })
+
+//     res.json(result)
+//   })
+
+  app.patch(`/api/list/:id`, async (req, res) => {
+    const { uid, listId, title }: { uid: string, listId: number, title: string } = req.body
+    const result = await prisma.lists.update({
+        where: { id: listId },
         data: {
             title: title,
-            userId: userId,
-            media: {
-                create: {
-                    title: mediaTitle,
-                    mediaId: id,
-                    type: media_type,
-                    imageUrl: poster_path
-                }
-            }
+            userId: uid,
         },
         include: { media: true }
     })
@@ -82,18 +115,10 @@ type Media = {
     res.json(result)
   })
 
-  // Add media to list id
-  app.post(`/api/list/:id`, async (req, res) => {
+  app.delete(`/api/list/:id`, async (req, res) => {
     const { listId }: { listId: number } = req.body
-    const { id, poster_path, title: mediaTitle, media_type }: Media = req.body.mediaItem
-    const result = await prisma.media.create({
-        data: {
-            mediaId: id,
-            listId: listId,
-            imageUrl: poster_path,
-            type: media_type,
-            title: mediaTitle
-        },
+    const result = await prisma.lists.delete({
+        where: { id: listId },
     })
 
     res.json(result)
